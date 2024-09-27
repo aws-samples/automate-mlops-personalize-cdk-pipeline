@@ -1,0 +1,359 @@
+{
+   "preprocessing": {
+    "jobName": "personalize-mlops-pre-processing",
+    "run": true
+  },
+  "datasetGroup": {
+    "serviceConfig": {
+      "name": "MovieLensCampaignDSG16",
+      "domain": "VIDEO_ON_DEMAND",
+      "tags": [
+        {
+          "tagKey": "name",
+          "tagValue": "MovieLensCampaignDSG3"
+        }
+      ]
+    },
+    "datasets": [
+      {
+        "type": "USERS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Users",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "USER_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "GENDER",
+                  "type": "string",
+                  "categorical": true
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "UserSchemaMedia"
+          },
+          "schemaVersion": "v2"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "UserDatasetMedia",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://personalize-mlops-preprocessed-data/users.csv"
+            },
+            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "UsersDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      },
+      {
+        "type": "ITEMS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Items",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "ITEM_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "GENRES",
+                  "type": "string",
+                  "categorical": true
+                },
+                {
+                  "name": "YEAR",
+                  "type": "int"
+                },
+                {
+                  "name": "CREATION_TIMESTAMP",
+                  "type": "long"
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "ItemsSchemaMedia"
+          },
+          "schemaVersion": "v2"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "ItemsDatasetMedia",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://personalize-mlops-preprocessed-data/item-meta.csv"
+            },
+            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "ItemsDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      },
+      {
+        "type": "INTERACTIONS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Interactions",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "USER_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "ITEM_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "EVENT_TYPE",
+                  "type": "string"
+                },
+                {
+                  "name": "TIMESTAMP",
+                  "type": "long"
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "InteractionsSchemaMedia"
+          },
+          "schemaVersion": "v2"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "InteractionsDatasetMedia",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://personalize-mlops-preprocessed-data/interactions.csv"
+            },
+            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "InteractionsDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      }
+    ]
+  },
+  "filters": [
+    {
+      "serviceConfig": {
+        "name": "MovieLensCampaignWatchedFilter",
+        "filterExpression": "INCLUDE ItemID WHERE Interactions.event_type IN (\"Watch\")",
+        "tags": [
+          {
+            "tagKey": "tag11",
+            "tagValue": "key11"
+          }
+        ]
+      }
+    },
+    {
+      "serviceConfig": {
+        "name": "MovieLensCampaignUnwatchedFilter",
+        "filterExpression": "EXCLUDE ItemID WHERE Interactions.event_type IN (\"Watch\")",
+        "tags": [
+          {
+            "tagKey": "tag11",
+            "tagValue": "key11"
+          }
+        ]
+      }
+    }
+  ],
+  "eventTracker": {
+    "serviceConfig": {
+      "name": "MovieLensCampaignEventTracker12",
+      "tags": [
+        {
+          "tagKey": "tag10",
+          "tagValue": "key10"
+        }
+      ]
+    }
+  },
+  "solutions": [
+    {
+      "serviceConfig": {
+        "name": "MovieLensCampaignSolutionPersonalizedRanking11",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-personalized-ranking"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [
+        {
+          "createCampaign": true,
+          "solutionversion": "",
+          "serviceConfig": {
+            "name": "MovieLensCampaign11",
+            "minProvisionedTPS": 1
+          }
+        }
+      ],
+      "batchInferenceJobs": [],
+      "batchSegmentJobs": []
+    },
+    {
+      "serviceConfig": {
+        "name": "MovieLensCampaignSolutionSimilarItems12",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-similar-items"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [],
+      "batchInferenceJobs": [
+        {
+          "serviceConfig": {
+            "jobName": "MovieLensBatchInferenceJob11",
+            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "jobInput": {
+              "s3DataSource": {
+                "path": "s3://personalize-mlops-preprocessed-data/media-inference-input/"
+              }
+            },
+            "jobOutput": {
+              "s3DataDestination": {
+                "path": "s3://personalize-mlops-preprocessed-data/media-inference-output/"
+              }
+            }
+          },
+          "createBatchInferenceJob": true
+        }
+      ],
+      "batchSegmentJobs": []
+    },
+    {
+      "serviceConfig": {
+        "name": "MovieLensBatchSegmentSolution12",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-item-affinity"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [],
+      "batchInferenceJobs": [],
+      "batchSegmentJobs": [
+        {
+          "serviceConfig": {
+            "jobName": "MovieLensBatchSegmentJob11",
+            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "jobInput": {
+              "s3DataSource": {
+                "path": "s3://personalize-mlops-preprocessed-data/media-segment-input/"
+              }
+            },
+            "jobOutput": {
+              "s3DataDestination": {
+                "path": "s3://personalize-mlops-preprocessed-data/media-segment-output/"
+              }
+            }
+          },
+          "createBatchSegmentJob": true
+        }
+      ]
+    }
+  ],
+  "recommenders": [
+    {
+      "serviceConfig": {
+        "name": "MovieLensRecommender",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-vod-most-popular",
+        "tags": [
+          {
+            "tagKey": "hello13",
+            "tagValue": "world13"
+          }
+        ]
+      },
+      "createRecommender": true
+    }
+  ]
+}

@@ -1,0 +1,390 @@
+{
+
+
+  "datasetGroup": {
+    "serviceConfig": {
+      "name": "RDSCampaignDSG",
+      "domain": "ECOMMERCE",
+      "tags": [
+        {
+          "tagKey": "name",
+          "tagValue": "RDSCampaignDSG1"
+        }
+      ]
+    },
+    "datasets": [
+      {
+        "type": "USERS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Users",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "USER_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "AGE",
+                  "type": "int"
+                },
+                {
+                  "name": "GENDER",
+                  "type": "string",
+                  "categorical": true
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "UserSchemaRetail"
+          },
+          "schemaVersion": "v1"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "UserDatasetRetail",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/users.csv"
+            },
+            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "UsersDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      },
+      {
+        "type": "ITEMS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Items",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "ITEM_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "PRICE",
+                  "type": "float"
+                },
+                {
+                  "name": "CATEGORY_L1",
+                  "type": "string",
+                  "categorical": true
+                },
+                {
+                  "name": "CATEGORY_L2",
+                  "type": "string",
+                  "categorical": true
+                },
+                {
+                  "name": "PRODUCT_DESCRIPTION",
+                  "type": "string",
+                  "textual": true
+                },
+                {
+                  "name": "GENDER",
+                  "type": "string",
+                  "categorical": true
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "ItemsSchemaRetail"
+          },
+          "schemaVersion": "v1"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "ItemsDatasetRetail",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/items.csv"
+            },
+            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "ItemsDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      },
+      {
+        "type": "INTERACTIONS",
+        "schema": {
+          "serviceConfig": {
+            "schema": {
+              "type": "record",
+              "name": "Interactions",
+              "namespace": "com.amazonaws.personalize.schema",
+              "fields": [
+                {
+                  "name": "ITEM_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "USER_ID",
+                  "type": "string"
+                },
+                {
+                  "name": "EVENT_TYPE",
+                  "type": "string"
+                },
+                {
+                  "name": "TIMESTAMP",
+                  "type": "long"
+                },
+                {
+                  "name": "DISCOUNT",
+                  "type": "string",
+                  "categorical": true
+                }
+              ],
+              "version": "1.0"
+            },
+            "name": "InteractionsSchemaMedia"
+          },
+          "schemaVersion": "v5"
+        },
+        "dataset": {
+          "serviceConfig": {
+            "name": "InteractionsDatasetRetail",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ]
+          }
+        },
+        "datasetImportJob": {
+          "serviceConfig": {
+            "dataSource": {
+              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/interactions.csv"
+            },
+            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "tags": [
+              {
+                "tagKey": "string",
+                "tagValue": "string"
+              }
+            ],
+            "importMode": "FULL",
+            "jobName": "InteractionsDatasetImportJob"
+          },
+          "createNewJob": true
+        }
+      }
+    ]
+  },
+  "filters": [
+    {
+      "serviceConfig": {
+        "name": "RDSPurchasedProductFilter",
+        "filterExpression": "EXCLUDE itemId WHERE INTERACTIONS.event_type in (\"Purchase\")",
+        "tags": [
+          {
+            "tagKey": "tag11",
+            "tagValue": "key11"
+          }
+        ]
+      }
+    },
+    {
+      "serviceConfig": {
+        "name": "RDSCategoryFilter",
+        "filterExpression": "INCLUDE ItemID WHERE Items.CATEGORY_L1 IN ($CATEGORY)",
+        "tags": [
+          {
+            "tagKey": "tag11",
+            "tagValue": "key11"
+          }
+        ]
+      }
+    }
+  ],
+  "eventTracker": {
+    "serviceConfig": {
+      "name": "RDSEventTracker",
+      "tags": [
+        {
+          "tagKey": "tag10",
+          "tagValue": "key10"
+        }
+      ]
+    }
+  },
+  "solutions": [
+    {
+      "serviceConfig": {
+        "name": "RDSCampaignSolutionPersonalizedRanking",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-personalized-ranking"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [
+        {
+          "createCampaign": true,
+          "solutionversion": "",
+          "serviceConfig": {
+            "name": "RDSCampaign",
+            "minProvisionedTPS": 1
+          }
+        }
+      ],
+      "batchInferenceJobs": [],
+      "batchSegmentJobs": []
+    },
+    {
+      "serviceConfig": {
+        "name": "RDSBatchInferenceSolution",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-similar-items"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [],
+      "batchInferenceJobs": [
+        {
+          "serviceConfig": {
+            "jobName": "RDSBatchInferenceJob",
+            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "jobInput": {
+              "s3DataSource": {
+                "path": "s3://personalize-batch-inference-rr/retail-inference-input/"
+              }
+            },
+            "jobOutput": {
+              "s3DataDestination": {
+                "path": "s3://personalize-batch-inference-rr/retail-inference-output/"
+              }
+            }
+          },
+          "createBatchInferenceJob": true
+        }
+      ],
+      "batchSegmentJobs": []
+    },
+    {
+      "serviceConfig": {
+        "name": "RDSBatchSegmentSolution",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-item-affinity"
+      },
+      "solutionVersion": {
+        "createNewSolutionVersion": true,
+        "serviceConfig": {
+          "trainingMode": "FULL",
+          "tags": [
+            {
+              "tagKey": "tag5",
+              "tagValue": "key5"
+            }
+          ]
+        }
+      },
+      "campaigns": [],
+      "batchInferenceJobs": [],
+      "batchSegmentJobs": [
+        {
+          "serviceConfig": {
+            "jobName": "RDSBatchSegmentJob",
+            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "jobInput": {
+              "s3DataSource": {
+                "path": "s3://personalize-batch-inference-rr/retail-segment-input/"
+              }
+            },
+            "jobOutput": {
+              "s3DataDestination": {
+                "path": "s3://personalize-batch-inference-rr/retail-segment-output/"
+              }
+            }
+          },
+          "createBatchSegmentJob": true
+        }
+      ]
+    }
+  ],
+  "recommenders": [
+    {
+      "serviceConfig": {
+        "name": "RDSRecommenderViewedXAlsoViewed",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-ecomm-customers-who-viewed-x-also-viewed",
+        "tags": [
+          {
+            "tagKey": "hello13",
+            "tagValue": "world13"
+          }
+        ]
+      },
+      "createRecommender": true
+    },
+    {
+      "serviceConfig": {
+        "name": "RDSRecommenderRecommendedForYou",
+        "recipeArn": "arn:aws:personalize:::recipe/aws-ecomm-recommended-for-you",
+        "tags": [
+          {
+            "tagKey": "hello13",
+            "tagValue": "world13"
+          }
+        ]
+      },
+      "createRecommender": true
+    }
+  ]
+}
