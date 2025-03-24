@@ -53,6 +53,7 @@ The following procedures assumes that all the OS-level configuration has been co
 - [Node.js](https://nodejs.org/en/) 20.16.0 or newer
 - [AWS CDK](https://aws.amazon.com/cdk/) 2.88.0 or newer
 - [Amazon Corretto OpenJDK](https://docs.aws.amazon.com/corretto/) 17.0.4.1
+- Docker 27.5.1 or newer (required for Lambda function bundling)
 
 > **Please ensure you test the templates before updating any production deployments.**
 
@@ -67,16 +68,36 @@ git clone https://github.com/aws-samples/automate-mlops-personalize-cdk-pipeline
 ### 2. Create a Python virtual environment for development
 
 ```bash
-python -m virtualenv .venv
+python3 -m venv .venv
 source ./.venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Build the solution for deployment (Using AWS CDK)
+### 3. Configure AWS credentials using AWS CLI
+
+```bash
+aws configure
+```
+
+You will be prompted to enter:
+* AWS Access Key ID: YOUR_ACCESS_KEY_ID
+* AWS Secret Access Key: YOUR_SECRET_ACCESS_KEY
+* Default region name: YOUR_REGION (e.g., us-east-1)
+* Default output format: json
+
+Alternatively you can also use:
+```bash
+export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
+export AWS_SESSION_TOKEN=YOUR_AWS_SESSION_TOKEN
+export AWS_DEFAULT_REGION=YOUR_REGION
+```
+
+### 4. Build the solution for deployment (Using AWS CDK)
 
 #### Define a stack
 
-To define a Personalize MlOps pipeline instance ```PersonalizeMlOpsPipeline``` do the following (
+To define a Personalize MlOps pipeline instance ```PersonalizeMlOpsPipeline``` do the following, modify the below based on your needs (
 Refer [personalize_pipeline_stack.py](personalize/infrastructure/stacks/personalize_pipeline_stack.py) for the complete
 example):
 
@@ -128,6 +149,7 @@ Once the infrastructure is deployed you can also enable and disable certain opti
 Packaging and deploying the solution with the AWS CDK allows for the most flexibility in development
 
 ```bash
+Start the docker engine if it is not running.
 
 # bootstrap CDK (required once - deploys a CDK bootstrap CloudFormation stack for assets)
 cdk bootstrap
@@ -139,12 +161,12 @@ cdk synth
 cdk deploy
 ```
 
-### 4. Test the pipeline
+### 5. Test the pipeline
 
 Following are some `Prerequisites` before you start running the pipeline:
 
 #### Create an Amazon S3 bucket to store the datasets
-1. Log in to the AWS Management Console and navigate to the S3 service.
+1. Log in to the AWS Management Console and navigate to the S3 service, in the same region where you deployed the Cloudformation Stack.
 2. Click on "Create bucket".
 3. Enter a unique bucket name (e.g., `personalize-datasets`).
 4. Select the AWS Region where you want to create the bucket.
@@ -203,6 +225,68 @@ Following are some `Prerequisites` before you start running the pipeline:
 }
 ```
 
+#### (Optional) Configure the Glue Job to create the output files
+
+If you already have the [required files](https://docs.aws.amazon.com/personalize/latest/dg/preparing-training-data.html) then you can upload in the S3 bucket and provide the path in the input configuration file that will be created in the next step. If you don't have input files, then we have provided a associated glue job script which you can configure in the input config file. Here are the steps:
+
+1. Navigate to AWS Glue
+   - Sign in to the AWS Management Console
+   - Search for "AWS Glue" in the services
+   - Go to "ETL Jobs" in the left navigation pane
+
+2. Create a new job
+   - Click "Create job"
+   - Select "Script editor"
+   - Choose "Spark" as the type
+   - Select Upload script and upload the [Glue Job script](https://github.com/aws-samples/automate-mlops-personalize-cdk-pipeline/blob/main/glue_job/movie_script.py) provided in the repo
+   - CLick Create Script
+   - When the Script Editor opens up replace the <BUCKET_NAME> with the name of the bucket that you created above.
+   - Enter a Job name such as `personalize-mlops-glue-job`
+   - Select "Glue version" (e.g., Glue 4.0)
+   - Choose "Python" as the language
+   - Select an appropriate IAM role, when creating this role we add a managed policy `AWSGlueServiceRole` along with the permissions listed below. As a best practice you can configure the IAM role to provide only necessary access.
+   **Note**: Ensure your IAM role has these minimum permissions:
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::<REPLACE_WITH_S3_BUCKET_NAME>/*",
+                    "arn:aws:s3:::<REPLACE_WITH_S3_BUCKET_NAME>/*"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": ["arn:aws:logs:*:*:/aws-glue/*"]
+            }
+        ]
+    }
+   ```
+   - Modify rest of the options based on your needs, I keep rest of the options as default.
+
+3. Save and run
+   - Click "Save"
+   - Click "Run job" to test
+   - Monitor the execution in the "Runs" tab
+   - After the execution is successful you will see the following files in the S3 bucket:
+     - interactions.csv
+     - item-meta.csv
+     - users.csv
+     Make a note of the S3 paths of these files you will need them to configure the input file to S3
+
+
+
 #### (Optional) Upload input files for batchInference and batch segment jobs
 If you plan to create Batch Inference and Batch Segment jobs for Personalize you will have to upload the corresponding input files to s3 and provide the path in the input configuration, as shown below:
 
@@ -229,7 +313,7 @@ Refer [Getting batch item recommendations with custom resources]()
       ]
 ```
 
-#### Create input configuration
+#### Create input configuration for Step Functions
 
 The solution uses configurations that is passed as an input to the state machine. The input contains all the necessary
 information to create and maintain your resources in Amazon Personalize.
@@ -243,7 +327,18 @@ The file can contain the following top level objects
 - `solutions` (can contain `campaigns`, `batchInferenceJobs` and `batchSegmentJobs`)
 - `recommenders`
 
-1. Customize the configuration file according to your specific requirements and include or exclude sections based on the Amazon Personalize artifacts you want to create. For the dataset import jobs in the datasets section, replace BUCKET_NAME and IAM ROLE ARN with the appropriate values. Similarly, update the BUCKET_NAME and IAM ROLE ARN for the batch inference and batch segment jobs sections. You can also change the path to the actual dataset files present in the S3 buckets.
+1. Customize the configuration file according to your specific requirements and include or exclude sections based on the Amazon Personalize artifacts you want to create. 
+2. For the dataset import jobs in the datasets section, replace BUCKET_NAME with the appropriate values that you have noted in the previous Glue Job setup steps or any custom files that you have. 
+3. Replace the roleArn with the role that you created before e.g., `personalize-role`
+4. Similarly, update the BUCKET_NAME and IAM ROLE ARN for the batch inference and batch segment jobs sections. You can also change the path to the actual dataset files present in the S3 buckets.
+5. If you have setup a Glue Job in previous step, add that detail in the input file as shown below
+
+         ```json
+        "preprocessing": {
+            "jobName": "personalize-mlops-glue-job",
+            "run": true
+          }
+          ```
 
 You can checkout sample parameters files for [retail](personalize/sample_configs/input_retail.json)
 and [media](personalize/sample_configs/input_media.json) use case.
