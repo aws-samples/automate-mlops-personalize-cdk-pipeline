@@ -56,9 +56,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/users.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/users.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -129,9 +129,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/items.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/items.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -195,9 +195,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalize-immersion-day-retail/interactions.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/interactions.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -302,15 +302,15 @@
         {
           "serviceConfig": {
             "jobName": "RDSBatchInferenceJob",
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "jobInput": {
               "s3DataSource": {
-                "path": "s3://personalize-batch-inference-rr/retail-inference-input/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/retail-inference-input/"
               }
             },
             "jobOutput": {
               "s3DataDestination": {
-                "path": "s3://personalize-batch-inference-rr/retail-inference-output/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/retail-inference-output/"
               }
             }
           },
@@ -342,15 +342,15 @@
         {
           "serviceConfig": {
             "jobName": "RDSBatchSegmentJob",
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "jobInput": {
               "s3DataSource": {
-                "path": "s3://personalize-batch-inference-rr/retail-segment-input/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/retail-segment-input/"
               }
             },
             "jobOutput": {
               "s3DataDestination": {
-                "path": "s3://personalize-batch-inference-rr/retail-segment-output/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/retail-segment-output/"
               }
             }
           },

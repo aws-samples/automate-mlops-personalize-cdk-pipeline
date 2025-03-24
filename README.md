@@ -49,8 +49,8 @@ architecture using AWS Step Functions, Amazon S3 and CloudWatch
 The following procedures assumes that all the OS-level configuration has been completed. They are:
 
 - [AWS Command Line Interface](https://aws.amazon.com/cli/)
-- [Python](https://www.python.org/) 3.9 or newer
-- [Node.js](https://nodejs.org/en/) 16.x or newer
+- [Python](https://www.python.org/) 3.12 or newer
+- [Node.js](https://nodejs.org/en/) 20.16.0 or newer
 - [AWS CDK](https://aws.amazon.com/cdk/) 2.88.0 or newer
 - [Amazon Corretto OpenJDK](https://docs.aws.amazon.com/corretto/) 17.0.4.1
 
@@ -60,7 +60,7 @@ The following procedures assumes that all the OS-level configuration has been co
 
 ```
 
-git clone https://gitlab.aws.dev/reagaros/personalize-mlops-pipeline
+git clone https://github.com/aws-samples/automate-mlops-personalize-cdk-pipeline
 
 ```
 
@@ -130,7 +130,7 @@ Packaging and deploying the solution with the AWS CDK allows for the most flexib
 ```bash
 
 # bootstrap CDK (required once - deploys a CDK bootstrap CloudFormation stack for assets)
-cdk bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess
+cdk bootstrap
 
 # build the solution
 cdk synth
@@ -212,7 +212,7 @@ Refer [Getting batch item recommendations with custom resources]()
         {
           "serviceConfig": {
             "jobName": "MovieLensBatchSegmentJob11",
-            "roleArn": "arn:aws:iam::686255965149:role/personalize-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/personalize-role",
             "jobInput": {
               "s3DataSource": {
                 "path": "s3://<bucket-name>/<input-path>/"

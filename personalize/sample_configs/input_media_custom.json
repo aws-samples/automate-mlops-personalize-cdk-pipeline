@@ -56,9 +56,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalizepocvod/users_age.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/users_age.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -126,9 +126,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalizepocvod/item-meta_with_desc.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/item-meta_with_desc.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -187,9 +187,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalizepocvod/interactions.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/interactions.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -262,9 +262,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalizepocvod/actions.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/actions.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -323,9 +323,9 @@
         "datasetImportJob": {
           "serviceConfig": {
             "dataSource": {
-              "dataLocation": "s3://513219625346-us-east-1-personalizepocvod/actions_interactions.csv"
+              "dataLocation": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/actions_interactions.csv"
             },
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "tags": [
               {
                 "tagKey": "string",
@@ -467,15 +467,15 @@
         {
           "serviceConfig": {
             "jobName": "MovieLensBatchInferenceJob11",
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "jobInput": {
               "s3DataSource": {
-                "path": "s3://personalize-batch-inference-rr/media-inference-input/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/media-inference-input/"
               }
             },
             "jobOutput": {
               "s3DataDestination": {
-                "path": "s3://personalize-batch-inference-rr/media-inference-output/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/media-inference-output/"
               }
             }
           },
@@ -507,15 +507,15 @@
         {
           "serviceConfig": {
             "jobName": "MovieLensBatchSegmentJob11",
-            "roleArn": "arn:aws:iam::513219625346:role/mlops-pipeline-personalize-dataset-import-job-role",
+            "roleArn": "arn:aws:iam::<REPLACE_WITH_AWS_ACCOUNT_ID>:role/mlops-pipeline-personalize-dataset-import-job-role",
             "jobInput": {
               "s3DataSource": {
-                "path": "s3://personalize-batch-inference-rr/media-segment-input/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/media-segment-input/"
               }
             },
             "jobOutput": {
               "s3DataDestination": {
-                "path": "s3://personalize-batch-inference-rr/media-segment-output/"
+                "path": "s3://<REPLACE_WITH_S3_BUCKET_NAME>/media-segment-output/"
               }
             }
           },

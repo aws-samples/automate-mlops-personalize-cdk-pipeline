@@ -55,7 +55,7 @@ job = Job(glueContext)
 job_arguments = sys.argv[1:]
 
 # Bucket name for storing data, change bucket name below
-bucket_name = "personalize-mlops-preprocessed-data"
+bucket_name = "<BUCKET_NAME>"
 
 # Download the MovieLens dataset
 zip_url = "http://files.grouplens.org/datasets/movielens/ml-latest-small.zip"
