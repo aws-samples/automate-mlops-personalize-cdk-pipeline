@@ -867,7 +867,7 @@ file:
 
 ```
 </details>
-
+#### Property Details
 <details>
 <summary>Here's the table with the description of each property, whether it's required, and valid values, formatted for a GitHub README</summary>
 
