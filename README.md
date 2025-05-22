@@ -970,27 +970,7 @@ You can run the pipeline using the main state machine by the name `PersonalizePi
 
 3. Select `Start Execution` and monitor the State Machine execution
 
-### Sample Inputs 
-
-```
-sample_inputs/
-├── batch/
-│   └── media-inference-input/
-│       └── aws-personalized-ranking/
-│           └── re-ranking.json    # input file to base your recommendations for re-ranking recipe
-│       └── aws-similar-items/
-│           └── similar-items.json # input file to base your recommendations on similar items recipe
-│       └── media-segment-input/
-│           └── aws-item-affinity/
-│               └── item-affinity.json # input file to base your recommendations on item affinity recipe
-│       └── retail-inference-input/
-│           └── aws-similar-items/
-│               └── related-items.json # input file to base your recommendations on similar items recipe
-│       └── retail-segment-input/
-│           └── aws-item-affinity/
-│               └── item-affinity.json # input file to base your recommendations on item affinity recipe
-
-```
+For configuring input files for batch processing for the batch infrence and batch segment jobs you can refer [Preparing input data for batch recommendations](https://docs.aws.amazon.com/personalize/latest/dg/batch-data-upload.html)
 
 
 
